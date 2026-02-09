@@ -8,7 +8,7 @@ const addFood = async (req, res) => {
 
    const food = new foodModel({
     name: req.body.name,
-    image: image_filename,
+    image: req.file.filename,
     description: req.body.description,
     price: req.body.price,
     category: req.body.category
@@ -22,4 +22,31 @@ const addFood = async (req, res) => {
    }
 }
 
-export { addFood };
+// all food list
+
+const listFood = async (req, res) => {
+      try { 
+         const foods = await foodModel.find({});
+         res.json({sucess:true, data:foods})
+   } catch (error) {
+      console.log(error);
+      res.json({sucess:false, message:"Error while fetching food list"})
+}
+}
+
+// delete food item
+
+const removeFood = async (req, res) => {
+    try {
+         const food = await foodModel.findById(req.body.id);
+         fs.unlink(`uploads/${food.image}`, () => {})
+      await foodModel.findByIdAndDelete(req.body.id);
+      res.json({sucess:true, message:"Food item removed"})
+      } catch (error) {
+         console.log(error);
+         res.json({sucess:false, message:"Error while removing food item"})
+      }
+}
+
+
+export { addFood, listFood, removeFood };
