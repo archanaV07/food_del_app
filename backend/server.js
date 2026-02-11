@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-// import bodyParser from 'body-parser';   
 import { connectDB } from './config/db.js';
 import foodRouter from './routes/foodRoute.js';
 
@@ -12,7 +11,6 @@ const port = process.env.PORT || 4000;
 // middlewares
 app.use(express.json());
 app.use(cors());
-// app.use(bodyParser.json());
 
 // db connection
 connectDB();
