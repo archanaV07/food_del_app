@@ -4,12 +4,22 @@ import { assets } from '../../assets/admin_assets/assets';
 import { assets as asset } from '../../assets/frontend_assets/assets';
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = ({setShowLogin}) => {
 
   const [menu, setMenu] = useState("home");
 
-  const {getTotalCartAmount} = useContext(StoreContext);
+  const {getTotalCartAmount, token, setToken} = useContext(StoreContext);
+
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken("");
+    navigate("/");
+
+  }
 
   return (
     <div className='navbar'>
@@ -20,14 +30,24 @@ const Navbar = ({setShowLogin}) => {
         <a href='#app-download' onClick={() => setMenu("mobile-app")}className={menu==="mobile-app"?"active":""}>Mobile-app</a>
         <a href='#footer' onClick={() => setMenu("contact")}className={menu==="contact"?"active":""}>Contact</a>
       </ul>
-     <div className='navbar-right'>
+     <div className = 'navbar-right'>
       <img src={asset.search_icon} alt=''/>
-      <div className='navbar-search-icon'>
+      <div className = 'navbar-search-icon'>
         <Link to='/cart' >
         <img src={asset.basket_icon} alt='' /> </Link>
-        <div className={getTotalCartAmount()===0?"":"dot"}></div>
+        <div className = {getTotalCartAmount()===0?"":"dot"}></div>
       </div>
-      <button onClick={() => setShowLogin(true) }>Sign In</button>
+      {!token?<button onClick={() => setShowLogin(true)}>Sign In</button>
+      :<div className = 'navbar-profile'>
+        <img src={asset.profile_icon} alt=''/>
+        <ul className ="nav-profile-dropdown">
+          <li><img src={asset.bag_icon}/><p>Orders</p></li>
+          <hr/>
+          <li onClick={logout}><img src={asset.logout_icon}/><p>Logout</p></li>
+        </ul>
+      </div>
+        }
+      
      </div>
     </div>
   )
